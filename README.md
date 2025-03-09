@@ -1,5 +1,6 @@
 # nano
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 A multi-threaded, UCI compliant C++ chess engine written in C++.
 
