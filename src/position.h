@@ -79,33 +79,66 @@ struct PieceData {
 class Position {
 public:
     Position();
-    explicit Position(const std::string &fen);
+    explicit Position(std::istringstream& fen);
     Position(const Position &other);
     Position(Position &&other) noexcept;
     Position &operator=(const Position &other);
     Position &operator=(Position &&other) noexcept;
     ~Position() = default;
 
-    void SetupFromFen(std::string &fen);
+    void SetupFromFen(std::istringstream& fen);
     std::string ToFen() const;
+    void Clear();
+    void SetPiece(const char &p, const SquareType_t &s);
     void Print() const;
     void DoMove(const Move &m);
     void UndoMove(const Move &m);
+    void DoNullMove();
+    void UndoNullMove();
     bool IsAttacked(SquareType_t square, ColorType_t attacker, ColorType_t defender) const;
     bool IsInCheck() const;
     bool IsDraw() const;
+    int SeeMove(const Move &m) const;
+    int See(const Move &m) const;
+    void UpdateStats(const Move &m, const Move &previous, const int16 &depth,
+        const ScoreType_t &score, const std::vector<Move> &quiets, Move *killers);
+    bool IsAttacked(const SquareType_t &s, const ColorType_t &us, const ColorType_t &them, uint64 m = 0ULL) const;
+    uint64 AttackersOf(const SquareType_t &s, const ColorType_t& c) const;
+    uint64 AttackersOf(const SquareType_t &s, const uint64 &bb) const;
+    bool InCheck() const;
+    bool IsDangerousCheck();
+    bool GivesCheck(const Move &m);
+    bool QuietGivesDangerousCheck(const Move &m);
+    bool IsLegal(const Move &m);
+    uint64 Pinned(const ColorType_t& us);
+    bool IsDraw();
+    bool IsCapPromotion(const MoveType_t &mt);
+    bool IsPromotion(const uint8 &mt);
 
     /// Getters
+    uint64 Checkers() const { return info_.checkers; }
     inline SquareType_t EnPassantSquare() const { return info_.enPassantSquare; }
     inline ColorType_t SideToMove() const { return info_.sideToMove; }
-    inline uint64 PositionKey() const { return info_.positionKey; }
+    inline uint64 Key() const { return info_.positionKey; }
     inline uint64 RepetitionKey() const { return info_.repetitionKey; }
     inline uint64 PawnKey() const { return info_.pawnKey; }
     inline uint64 MaterialKey() const { return info_.materialKey; }
     inline uint64 AllPieces() const { return pieces_.piecesByColor[Color::WHITE] | pieces_.piecesByColor[Color::BLACK]; }
-    inline unsigned PieceCount(ColorType_t color, PieceType_t piece) const { return pieces_.pieceCount[color][piece]; }
+    inline unsigned NumberOf(ColorType_t color, PieceType_t piece) const { return pieces_.pieceCount[color][piece]; }
     inline PieceType_t PieceOn(SquareType_t square) const { return pieces_.pieceOn[square]; }
     inline SquareType_t KingSquare(ColorType_t color) const { return info_.kingSquare[color]; }
+    inline ColorType_t ColorOn(const SquareType_t &s) const { return pieces_.colorOn[s]; }
+    inline uint16 Id() { return threadId_; }
+    inline bool IsMaster() { return threadId_ == 0; }
+    inline uint64 NodesSearched() const { return nodesSearched_; }
+    inline uint64 QNodesSearched() const { return qNodesSearched_; }
+ 
+    //  Setters
+    inline void SetId(uint16 id) { threadId_ = id; }
+    inline void SetNodesSearched(uint64 n) { nodesSearched_ = n; }
+    inline void SetQNodesSearched(uint64 qn) { qNodesSearched_ = qn; }
+    inline void AdjustNodes(const uint64 &dn) { nodesSearched_ += dn; }
+    inline void AdjustQNodes(const uint64 &dn) { qNodesSearched_ += dn; }
 
     inline bool CanCastleKingside(ColorType_t color) const {
         return info_.castlingRights & (color == Color::WHITE ? kWhiteKingside : kBlackKingside);
@@ -120,8 +153,7 @@ private:
     PositionInfo info_;
     PieceData pieces_;
     uint64 nodesSearched_ = 0;
-    uint64 quiescentNodesSearched_ = 0;
-
+    uint64 qNodesSearched_ = 0;
     RootMoves rootMoves_;
 };
 
