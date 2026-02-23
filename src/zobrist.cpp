@@ -59,6 +59,8 @@ bool Zobrist::load()
 
     //}
 
+    // Populate deterministic random keys from the static zobrist_rands table.
+    // The ordering must stay stable so persisted keys remain reproducible.
     // pieces
     unsigned int idx = 0;
     for (SquareType_t sq = Square::A1; sq <= Square::H8; ++sq) {

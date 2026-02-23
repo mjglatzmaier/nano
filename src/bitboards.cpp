@@ -40,6 +40,7 @@ namespace Bitboards
 
 void Bitboards::load()
 {
+    // These tables are generated once at startup and reused by movegen/eval.
     std::vector<std::vector<int>> steps = {
         {},                                 // pawn
         {10, -6, -10, 6, 17, 15, -15, -17}, // knight
@@ -210,7 +211,7 @@ void Bitboards::load()
                     front_regions[c][s] |= row_masks[r];
         }
 
-        // between bitboard
+        // Squares on the ray from s to s2 (inclusive), or 0 when not aligned.
         for (SquareType_t s2 = Square::A1; s2 <= Square::H8; ++s2)
         {
             if (s != s2)

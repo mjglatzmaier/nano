@@ -93,10 +93,10 @@ struct piece_data
 
     inline void do_cap(const ColorType_t& c, const PieceType_t &p, const SquareType_t &f, const SquareType_t &t, Info &ifo);
     inline void do_ep(const ColorType_t& c, const SquareType_t &f, const SquareType_t &t, Info &ifo);
-    inline void do_promotion(const ColorType_t& c, const PieceType_t &p,
-                             const SquareType_t &f, const SquareType_t &t, Info &ifo);
     inline void do_promotion_cap(const ColorType_t& c,
                                  const PieceType_t &p, const SquareType_t &f, const SquareType_t &t, Info &ifo);
+    inline void do_promotion(const ColorType_t& c, const PieceType_t &p,
+                             const SquareType_t &f, const SquareType_t &t, Info &ifo);
     inline void do_castle_ks(const ColorType_t& c, const SquareType_t &f, const SquareType_t &t, Info &ifo);
     inline void do_castle_qs(const ColorType_t& c, const SquareType_t &f, const SquareType_t &t, Info &ifo);
     inline void remove_piece(const ColorType_t& c, const PieceType_t &p, const SquareType_t &s, Info &ifo);

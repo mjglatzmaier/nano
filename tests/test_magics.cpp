@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <ctime>
 #include "magics.h"
 #include "bitboards.h"
 

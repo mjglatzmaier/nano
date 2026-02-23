@@ -137,7 +137,7 @@ bool Magics::load() {
             uint64 magic = 0ULL;
             uint64 filter = 0ULL;
 
-            // enumerate all occupancy combinations of the bishop/rook mask
+            // Enumerate all occupancy subsets for the square mask.
             do
             {
                 occupancy[occ_size] = b;
@@ -174,7 +174,7 @@ bool Magics::load() {
 
             uint64 stored[64][144] = {{}};
 
-            // filter those occupancies which are redundant, the index : r_occ[s][idx] + offset
+            // Collapse duplicate attack bitboards and map magic index -> compact attack table index.
             for (int i = 0; i < occ_size; ++i)
             {
                 unsigned int idx = unsigned(magic * (mask & occupancy[i]) >> shift);

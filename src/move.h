@@ -14,9 +14,6 @@ class position;
 
 enum Dir { N, S, NN, SS, NW, NE, SW, SE, no_dir };
 
-
-
-
 class Movegen {
 	int last;
 	Move list[218]; // max moves in any chess position
